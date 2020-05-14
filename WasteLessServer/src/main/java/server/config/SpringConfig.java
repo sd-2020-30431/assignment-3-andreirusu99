@@ -11,7 +11,7 @@ import server.db.JPAConfig;
 @Configuration
 @EnableAutoConfiguration
 @Import({JPAConfig.class})
-@ComponentScan({"server.controller", "server.service"})
+@ComponentScan({"server.controller", "server.service", "server.mediator"})
 public class SpringConfig {
 
     @Bean
