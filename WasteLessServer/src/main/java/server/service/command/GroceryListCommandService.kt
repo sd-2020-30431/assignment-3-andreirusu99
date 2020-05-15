@@ -12,10 +12,10 @@ class GroceryListCommandService {
     @Autowired
     private lateinit var groceryListRepo: GroceryListRepo
 
-    fun addList(userId: Int, listName: String) {
+    fun addList(userId: Int, listName: String): GroceryList {
         val groceryList = GroceryList(listName = listName, userId = userId)
         println("List {} stored".format(listName))
-        groceryListRepo.save(groceryList)
+        return groceryListRepo.save(groceryList)
     }
 
     @Transactional

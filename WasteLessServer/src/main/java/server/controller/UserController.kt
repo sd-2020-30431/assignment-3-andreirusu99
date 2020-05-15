@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import server.db.model.User
-import server.service.command.UserCommandService
-import server.service.query.UserQueryService
+import server.mediator.Mediator
+import server.mediator.command.LoginUserCommand
+import server.mediator.response.LoginUserCommandResponse
 import server.service.user.UserService
 
 @RestController
@@ -16,14 +17,14 @@ class UserController {
     private lateinit var userService: UserService
 
     @Autowired
-    private lateinit var userQueryService: UserQueryService
-
-    @Autowired
-    private lateinit var userCommandService: UserCommandService
+    private lateinit var mediator: Mediator
 
     @RequestMapping("users/login", method = [RequestMethod.POST])
     fun loginUser(@RequestBody user: User): ResponseEntity<Int> {
-        return ResponseEntity.ok(userService.attemptLogin(user.firstName, user.lastName, user.password))
+        val request = LoginUserCommand(user)
+        val handler = mediator.handle<LoginUserCommand, LoginUserCommandResponse>(request)
+        val response = handler.handle(request)
+        return ResponseEntity.ok(response.userId)
     }
 
     @RequestMapping("/users/all", method = [RequestMethod.GET])
@@ -38,17 +39,13 @@ class UserController {
 
     @RequestMapping("/users/add", method = [RequestMethod.POST])
     fun addUser(@RequestBody user: User) =
-        ResponseEntity.ok(userService.addUser(user.firstName, user.lastName, user.password, user.calorieIntake))
+            ResponseEntity.ok(userService.addUser(user.firstName, user.lastName, user.password, user.calorieIntake))
 
     @RequestMapping("/users/update/{userId}", method = [RequestMethod.PUT])
     fun updateUser(@PathVariable userId: Int, @RequestBody calories: Int) =
-        ResponseEntity.ok(userService.updateUser(userId, calories))
+            ResponseEntity.ok(userService.updateUser(userId, calories))
 
     @RequestMapping("/users/delete/{userId}", method = [RequestMethod.DELETE])
     fun deleteUser(@PathVariable userId: Int) =
-        ResponseEntity.ok(userService.deleteUser(userId))
-
-    @RequestMapping("/users/sync", method = [RequestMethod.POST])
-    fun syncDatabase(@RequestBody userList: List<User>) =
-        ResponseEntity.ok(userService.syncDatabase(userList.toMutableList()))
+            ResponseEntity.ok(userService.deleteUser(userId))
 }

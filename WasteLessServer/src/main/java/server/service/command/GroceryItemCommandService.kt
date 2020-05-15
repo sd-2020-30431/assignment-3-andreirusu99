@@ -13,11 +13,11 @@ class GroceryItemCommandService {
     @Autowired
     private lateinit var groceryItemRepo: GroceryItemRepo
 
-    fun addItem(listId: Int, itemName: String, itemQuantity: Int, calorieValue: Int, purchaseDate: Date, consumptionDate: Date, expirationDate: Date
-    ) {
+    fun addItem(listId: Int, itemName: String, itemQuantity: Int, calorieValue: Int, purchaseDate: Date, consumptionDate: Date, expirationDate: Date)
+        : GroceryItem{
         val groceryItem = GroceryItem(itemName = itemName, itemQuantity = itemQuantity, calorieValue = calorieValue, purchaseDate = purchaseDate, consumptionDate = consumptionDate, expirationDate = expirationDate)
         println("Item {} stored".format(itemName))
-        groceryItemRepo.save(groceryItem)
+        return groceryItemRepo.save(groceryItem)
     }
 
     @Transactional

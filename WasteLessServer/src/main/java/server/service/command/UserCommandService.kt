@@ -12,7 +12,8 @@ class UserCommandService {
     @Autowired
     private lateinit var userRepo: UserRepo
 
-    fun attemptLogin(firstName: String, lastName: String, password: String): Int {
+    fun attemptLogin(firstName: String, lastName: String, password: String)
+            : Int {
         val users = userRepo.getMatchingUser(firstName, lastName, password)
         if (users.isNotEmpty()) return users[0].id
         val user = User(firstName = firstName, lastName = lastName, password = password, calorieIntake = 0)
