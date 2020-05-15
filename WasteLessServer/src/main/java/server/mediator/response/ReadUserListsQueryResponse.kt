@@ -1,4 +1,7 @@
 package server.mediator.response
 
-class ReadUserListsQueryResponse {
-}
+import server.db.model.GroceryList
+import server.mediator.Response
+
+class ReadUserListsQueryResponse constructor(var lists: List<GroceryList>)
+    : Response

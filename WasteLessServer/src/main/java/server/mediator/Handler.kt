@@ -1,6 +1,4 @@
-package server.mediator.handler
-
-import server.mediator.Request
+package server.mediator
 
 interface Handler<in TRequest : Request, out TResponse> {
 

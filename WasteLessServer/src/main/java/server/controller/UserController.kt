@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import server.db.model.User
+import server.service.command.UserCommandService
+import server.service.query.UserQueryService
 import server.service.user.UserService
 
 @RestController
@@ -13,9 +15,16 @@ class UserController {
     @Autowired
     private lateinit var userService: UserService
 
+    @Autowired
+    private lateinit var userQueryService: UserQueryService
+
+    @Autowired
+    private lateinit var userCommandService: UserCommandService
+
     @RequestMapping("users/login", method = [RequestMethod.POST])
-    fun loginUser(@RequestBody user: User): ResponseEntity<Int> =
-            ResponseEntity.ok(userService.attemptLogin(user.firstName, user.lastName, user.password))
+    fun loginUser(@RequestBody user: User): ResponseEntity<Int> {
+        return ResponseEntity.ok(userService.attemptLogin(user.firstName, user.lastName, user.password))
+    }
 
     @RequestMapping("/users/all", method = [RequestMethod.GET])
     fun getAllUsers(): ResponseEntity<List<User>> {
