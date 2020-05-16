@@ -1,14 +1,12 @@
-package server.db.report.entity
+package server.db.model
 
 import org.springframework.beans.factory.annotation.Autowired
-import server.db.model.GroceryItem
-import server.db.model.User
 import server.db.report.Report
 import server.service.query.GroceryItemQueryService
 import server.service.query.GroceryListQueryService
 import java.util.*
 
-class WeeklyReport : Report {
+class MonthlyReport : Report{
 
     @Autowired
     private lateinit var groceryListQueryService: GroceryListQueryService
@@ -30,7 +28,7 @@ class WeeklyReport : Report {
         for (item in items) {
             val then = Calendar.getInstance()
             then.time = item.consumptionDate
-            if (then[Calendar.WEEK_OF_YEAR] == now[Calendar.WEEK_OF_YEAR]) {
+            if (then[Calendar.MONTH] == now[Calendar.MONTH]) {
                 calories += item.calorieValue * item.itemQuantity - user.calorieIntake
             }
         }

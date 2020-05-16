@@ -16,4 +16,5 @@ class UserQueryService {
 
     fun getWaste(userId: Int): Int =
             userRepo.findById(userId).get().calorieIntake
+
 }

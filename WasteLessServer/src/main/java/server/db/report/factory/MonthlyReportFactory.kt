@@ -1,9 +1,9 @@
 package server.db.report.factory
 
+import server.db.model.MonthlyReport
 import server.db.report.Report
-import server.db.report.entity.MonthlyReport
 
-class MonthlyReportFactory : AbstractReportFactory() {
+class MonthlyReportFactory : ReportFactory() {
 
     override fun getReport(reportType: String): Report {
         return MonthlyReport()
