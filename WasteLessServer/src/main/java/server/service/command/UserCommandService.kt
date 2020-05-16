@@ -20,41 +20,11 @@ class UserCommandService {
         return userRepo.save(user).id
     }
 
-    fun addUser(firstName: String, lastName: String, password: String, calorieIntake: Int) {
-        println("entered @add")
-        val user = User(firstName = firstName, lastName = lastName, password = password, calorieIntake = calorieIntake)
-        println("User stored : $user")
-        userRepo.save(user)
-    }
-
     @Transactional
-    fun updateUser(id: Int, calorieIntake: Int) =
-            userRepo.findById(id).let {
+    fun updateUser(userId: Int, calorieIntake: Int) =
+            userRepo.findById(userId).let {
                 it.ifPresent { user ->
                     user.calorieIntake = calorieIntake
                 }
             }
-
-    fun deleteUser(id: Int) {
-        userRepo.deleteById(id)
-    }
-
-    @Transactional
-    fun syncDatabase(userList: MutableList<User>) {
-        userRepo.findAll().forEach {
-            userList.find { user -> user.id == it.id }?.let { user ->
-                it.apply {
-                    lastName = user.lastName
-                    firstName = user.firstName
-                    password = user.password
-                    calorieIntake = user.calorieIntake
-                }
-                userList.remove(user)
-            } ?: userRepo.delete(it)
-        }
-        userList.forEach {
-            userRepo.save(it)
-        }
-    }
-
 }
