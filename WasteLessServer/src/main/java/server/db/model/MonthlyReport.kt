@@ -1,14 +1,14 @@
-package server.db.report.entity
+package server.db.model
 
 import org.springframework.beans.factory.annotation.Autowired
-import server.db.model.GroceryItem
-import server.db.model.User
 import server.db.report.Report
+import server.db.report.ReportDTO
 import server.service.query.GroceryItemQueryService
 import server.service.query.GroceryListQueryService
+import server.service.query.UserQueryService
 import java.util.*
 
-class WeeklyReport : Report {
+class MonthlyReport : Report{
 
     @Autowired
     private lateinit var groceryListQueryService: GroceryListQueryService
@@ -16,10 +16,14 @@ class WeeklyReport : Report {
     @Autowired
     private lateinit var groceryItemQueryService: GroceryItemQueryService
 
-    override fun computeWastedCalories(user: User): Int {
+    @Autowired
+    private lateinit var userQueryService: UserQueryService
+
+
+    override fun computeWastedCalories(userId: Int): ReportDTO {
         var calories = 0
         var items: ArrayList<GroceryItem> = ArrayList<GroceryItem>()
-        val lists = groceryListQueryService.getUserLists(user.id)
+        val lists = groceryListQueryService.getUserLists(userId)
         for (list in lists) {
             items = ArrayList(groceryItemQueryService.getListItems(list.id))
             for (item in items) {
@@ -30,10 +34,10 @@ class WeeklyReport : Report {
         for (item in items) {
             val then = Calendar.getInstance()
             then.time = item.consumptionDate
-            if (then[Calendar.WEEK_OF_YEAR] == now[Calendar.WEEK_OF_YEAR]) {
-                calories += item.calorieValue * item.itemQuantity - user.calorieIntake
+            if (then[Calendar.MONTH] == now[Calendar.MONTH]) {
+                calories += item.calorieValue * item.itemQuantity - userQueryService.getUser(userId).calorieIntake
             }
         }
-        return calories
+        return ReportDTO(calories)
     }
 }

@@ -5,12 +5,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-import server.mediator.command.AddListCommand;
-import server.mediator.handler.AddListCommandHandler;
-import server.mediator.handler.ReadListItemsQueryHandler;
-import server.mediator.handler.ReadUserListsQueryHandler;
-import server.mediator.query.ReadListItemsQuery;
-import server.mediator.query.ReadUserListsQuery;
+import server.mediator.command.*;
+import server.mediator.handler.*;
+import server.mediator.query.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +22,17 @@ public class Mediator implements ApplicationContextAware {
 
     public Mediator() {
         this.handlerMap = new HashMap<>();
-        handlerMap.put(AddListCommand.class, AddListCommandHandler.class);
         handlerMap.put(ReadUserListsQuery.class, ReadUserListsQueryHandler.class);
         handlerMap.put(ReadListItemsQuery.class, ReadListItemsQueryHandler.class);
+        handlerMap.put(ReadUserWasteQuery.class, ReadUserWasteQueryHandler.class);
+        handlerMap.put(ReadReportQuery.class, ReadReportQueryHandler.class);
+        handlerMap.put(ReadAllUsersQuery.class, ReadAllUsersQueryHandler.class);
+        handlerMap.put(AddListCommand.class, AddListCommandHandler.class);
+        handlerMap.put(AddItemCommand.class, AddItemCommandHandler.class);
+        handlerMap.put(DeleteItemCommand.class, DeleteItemCommandHandler.class);
+        handlerMap.put(DeleteListCommand.class, DeleteListCommandHandler.class);
+        handlerMap.put(LoginUserCommand.class, LoginUserCommandHandler.class);
+        handlerMap.put(UpdateUserCommand.class, UpdateUserCommandHandler.class);
     }
 
     public <T extends Request, R extends Response> Handler<T, R> handle(T request) {

@@ -14,6 +14,11 @@ class UserQueryService {
     fun getAllUsers(): List<User> =
             userRepo.findAll()
 
+    fun getUser(userId: Int): User =
+        userRepo.findById(userId).get()
+
+
     fun getWaste(userId: Int): Int =
             userRepo.findById(userId).get().calorieIntake
+
 }
