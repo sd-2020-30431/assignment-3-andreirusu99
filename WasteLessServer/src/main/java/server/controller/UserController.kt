@@ -6,15 +6,17 @@ import org.springframework.web.bind.annotation.*
 import server.db.model.User
 import server.mediator.Mediator
 import server.mediator.command.LoginUserCommand
+import server.mediator.command.UpdateUserCommand
+import server.mediator.query.ReadAllUsersQuery
+import server.mediator.query.ReadUserWasteQuery
+import server.mediator.response.EmptyResponse
 import server.mediator.response.LoginUserCommandResponse
-import server.service.user.UserService
+import server.mediator.response.ReadAllUsersQueryResponse
+import server.mediator.response.ReadUserWasteQueryResponse
 
 @RestController
 @RequestMapping("/wasteless")
 class UserController {
-
-    @Autowired
-    private lateinit var userService: UserService
 
     @Autowired
     private lateinit var mediator: Mediator
@@ -29,23 +31,24 @@ class UserController {
 
     @RequestMapping("/users/all", method = [RequestMethod.GET])
     fun getAllUsers(): ResponseEntity<List<User>> {
-        println("\"/users/all\" received")
-        return ResponseEntity.ok(userService.getAllUsers())
+        val request = ReadAllUsersQuery()
+        val handler = mediator.handle<ReadAllUsersQuery, ReadAllUsersQueryResponse>(request)
+        val response = handler.handle(request)
+        return ResponseEntity.ok(response.users)
     }
 
     @RequestMapping("/users/waste/{userId}", method = [RequestMethod.GET])
-    fun getUserWaste(@PathVariable userId: Int): ResponseEntity<Int> =
-            ResponseEntity.ok(userService.getWaste(userId))
-
-    @RequestMapping("/users/add", method = [RequestMethod.POST])
-    fun addUser(@RequestBody user: User) =
-            ResponseEntity.ok(userService.addUser(user.firstName, user.lastName, user.password, user.calorieIntake))
+    fun getUserWaste(@PathVariable userId: Int): ResponseEntity<Int> {
+        val request = ReadUserWasteQuery(userId)
+        val handler = mediator.handle<ReadUserWasteQuery, ReadUserWasteQueryResponse>(request)
+        val response = handler.handle(request)
+        return ResponseEntity.ok(response.waste)
+    }
 
     @RequestMapping("/users/update/{userId}", method = [RequestMethod.PUT])
-    fun updateUser(@PathVariable userId: Int, @RequestBody calories: Int) =
-            ResponseEntity.ok(userService.updateUser(userId, calories))
-
-    @RequestMapping("/users/delete/{userId}", method = [RequestMethod.DELETE])
-    fun deleteUser(@PathVariable userId: Int) =
-            ResponseEntity.ok(userService.deleteUser(userId))
+    fun updateUser(@PathVariable userId: Int, @RequestBody calories: Int) {
+        val request = UpdateUserCommand(userId, calories)
+        val handler = mediator.handle<UpdateUserCommand, EmptyResponse>(request)
+        handler.handle(request)
+    }
 }
